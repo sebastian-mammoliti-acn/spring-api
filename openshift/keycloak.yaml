@@ -72,7 +72,7 @@ spec:
           args:
             - start-dev
             - --import-realm
-            - --proxy-readers=xforwarded
+            - --proxy-headers=xforwarded
             - --http-enabled=true
           envFrom:
             - secretRef:
