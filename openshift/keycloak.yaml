@@ -99,30 +99,30 @@ spec:
             - name: management
               containerPort: 9000
               protocol: TCP
-          startupProbe:
-            httpGet:
-              path: /health/started
-              port: management
-            initialDelaySeconds: 300
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 60
-          readinessProbe:
-            httpGet:
-              path: /health/ready
-              port: management
-            initialDelaySeconds: 300
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 20
-          livenessProbe:
-            httpGet:
-              path: /health/live
-              port: http
-            initialDelaySeconds: 300
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 15
+          #startupProbe:
+          #  httpGet:
+          #    path: /health/started
+          #    port: management
+          #  initialDelaySeconds: 300
+          #  periodSeconds: 10
+          #  timeoutSeconds: 5
+          #  failureThreshold: 60
+          #readinessProbe:
+          #  httpGet:
+          #    path: /health/ready
+          #    port: management
+          #  initialDelaySeconds: 300
+          #  periodSeconds: 10
+          #  timeoutSeconds: 5
+          #  failureThreshold: 20
+          #livenessProbe:
+          #  httpGet:
+          #    path: /health/live
+          #    port: http
+          #  initialDelaySeconds: 300
+          #  periodSeconds: 20
+          #  timeoutSeconds: 5
+          #  failureThreshold: 15
           resources:
             requests:
               cpu: 100m
