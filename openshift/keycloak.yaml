@@ -28,10 +28,10 @@ metadata:
 data:
   spring-demo-realm.json: |
     {
-      "realm": "string-demo",
+      "realm": "spring-demo",
       "enabled": true,
       "displayName": "Spring Demo",
-      "clients": [
+      "clients":
         {
           "clientId": "spring-api-client",
           "name": "Spring API Client",
@@ -87,17 +87,25 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: management
+            initialDelaySeconds: 300
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 60
           readinessProbe:
             httpGet:
-              path: /realms/master
-              port: http
+              path: /health/ready
+              port: management
             initialDelaySeconds: 300
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 20
           livenessProbe:
             httpGet:
-              path: /realms/master
+              path: /health/live
               port: http
             initialDelaySeconds: 300
             periodSeconds: 20
