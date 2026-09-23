@@ -41,7 +41,7 @@ data:
           "clientAuthenticatorType": "client-secret",
           "secret": "${SPRING_API_CLIENT_SECRET}",
           "serviceAccountsEnabled": true,
-          "standardFlowEnebled": false,
+          "standardFlowEnabled": false,
           "directAccessGrantsEnabled": false,
           "authorizationServicesEnabled": false,
           "fullScopeAllowed": true
