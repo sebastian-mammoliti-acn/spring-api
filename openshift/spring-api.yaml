@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: spring-api
-          image: spring-api:latest
+          image: image-registry.openshift-image-registry.svc:5000/sebastian-mammoliti-dev/spring-api:latest
           imagePullPolicy: Always
           ports:
             - name: http
