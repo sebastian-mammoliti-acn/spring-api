@@ -25,10 +25,10 @@ spec:
     type: Docker
     dockerStrategy:
       dockerfilePath: Dockerfile
-    output:
-      to:
-        kind: ImageStreamTag
-        name: spring-api:latest
+  output:
+    to:
+      kind: ImageStreamTag
+      name: spring-api:latest
   triggers:
     - type: ConfigChange
 ---
@@ -37,7 +37,7 @@ kind: Deployment
 metadata:
   name: spring-api
   labels:
-    app: apring-api
+    app: spring-api
 spec:
   replicas: 1
   selector:
