@@ -25,13 +25,19 @@ metadata:
   name: keycloak-realm
   labels:
     app: keycloak
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm
+  labels:
+    app: keycloak
 data:
   spring-demo-realm.json: |
     {
       "realm": "spring-demo",
       "enabled": true,
       "displayName": "Spring Demo",
-      "clients":
+      "clients": [
         {
           "clientId": "spring-api-client",
           "name": "Spring API Client",
@@ -39,7 +45,7 @@ data:
           "protocol": "openid-connect",
           "publicClient": false,
           "clientAuthenticatorType": "client-secret",
-          "secret": "${SPRING_API_CLIENT_SECRET}",
+          "secret": "ChangeMe-Spring-API-Client-123!",
           "serviceAccountsEnabled": true,
           "standardFlowEnabled": false,
           "directAccessGrantsEnabled": false,
