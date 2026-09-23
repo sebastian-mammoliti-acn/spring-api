@@ -3,7 +3,7 @@ kind: Secret
 metadata:
   name: keycloak-admin
   labels:
-    app:keycloak
+    app: keycloak
 type: Opaque
 stringData:
  KC_BOOTSTRAP_ADMIN_USERNAME: admin
