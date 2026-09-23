@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-admin
+  labels:
+    app:keycloak
+type: Opaque
+stringData:
+ KC_BOOTSTRAP_ADMIN_USERNAME: admin
+ KC_BOOTSTRAP_ADMIN_PASSWORD: Password123!
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spring-api-client
+  labels:
+    app: keycloak
+type: Opaque
+stringData:
+  client-secret: ChangeMe-String-API-Client-123!
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm
+  labels:
+    app: keycloak
+data:
+  spring-demo-realm.json: |
+    {
+      "realm": "string-demo",
+      "enabled": true,
+      "displayName": "Spring Demo",
+      "clients": [
+        {
+          "clientId": "spring-api-client",
+          "name": "Spring API Client",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${SPRING_API_CLIENT_SECRET}",
+          "serviceAccountsEnabled": true,
+          "standardFlowEnebled": false,
+          "directAccessGrantsEnabled": false,
+          "authorizationServicesEnabled": false,
+          "fullScopeAllowed": true
+        }
+      ]
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - start-dev
+            - --import-realm
+            - --proxy-readers=xforwarded
+            - --http-enabled=true
+          envFrom:
+            - secretRef:
+                name: keycloak-admin
+          env:
+            - name: SPRING_API_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: spring-api-client
+                  key: client-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /realms/master
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /realms/master
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          volumeMounts:
+            - name: realm-import
+              mountPath: /opt/keycloak/data/import
+              readOnly: true
+      volumes:
+        - name: realm-import
+          configMap:
+            name: keycloak-realm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  selector:
+    app: keycloak
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  to:
+    kind: Service
+    name: keycloak
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
