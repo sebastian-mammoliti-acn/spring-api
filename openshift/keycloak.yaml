@@ -91,7 +91,7 @@ spec:
             httpGet:
               path: /realms/master
               port: http
-            initialDelaySeconds: 60
+            initialDelaySeconds: 300
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 20
@@ -99,7 +99,7 @@ spec:
             httpGet:
               path: /realms/master
               port: http
-            initialDelaySeconds: 180
+            initialDelaySeconds: 300
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 15
