@@ -74,10 +74,13 @@ spec:
             - --import-realm
             - --proxy-headers=xforwarded
             - --http-enabled=true
+            
           envFrom:
             - secretRef:
                 name: keycloak-admin
           env:
+            - name: KC_HEALTH_ENABLED
+              value: "true"
             - name: SPRING_API_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -86,6 +89,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: management
+              containerPort: 9000
               protocol: TCP
           startupProbe:
             httpGet:
